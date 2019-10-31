@@ -1,0 +1,38 @@
+{
+  "name": "@lomasi/server",
+  "version": "1.0.0-alpha.0",
+  "description": "Login made simple",
+  "keywords": [],
+  "homepage": "https://github.com/etienne-dldc/lomasi#readme",
+  "bugs": {
+    "url": "https://github.com/etienne-dldc/lomasi/issues"
+  },
+  "repository": "git@github.com:etienne-dldc/lomasi.git",
+  "license": "MIT",
+  "author": "Etienne Dldc <e.deladonchamps@gmail.com>",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "module": "dist/lomasi.server.esm.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsdx build",
+    "pub": "yarn build && npx np",
+    "start": "tsdx watch",
+    "test": "tsdx test",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^8.5.1",
+    "tumau": "^1.0.0-alpha.36",
+    "yup": "^0.27.0"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^8.3.5",
+    "@types/yup": "^0.26.24",
+    "tsdx": "^0.11.0",
+    "tslib": "^1.10.0",
+    "typescript": "^3.6.4"
+  }
+}

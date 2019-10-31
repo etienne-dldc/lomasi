@@ -1,0 +1,44 @@
+{
+  "name": "lomasi",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "examples/*",
+    "scripts",
+    "tests"
+  ],
+  "keywords": [
+    "login",
+    "simple",
+    "typescript"
+  ],
+  "repository": "git@github.com:etienne-dldc/lomasi.git",
+  "author": "Etienne Dldc <e.deladonchamps@gmail.com>",
+  "scripts": {
+    "build": "lerna run build --stream",
+    "test": "lerna run test --stream",
+    "typecheck": "lerna exec --stream --scope '{@lomasi,@lomasi-example}/**' 'tsc --noEmit'",
+    "norm": "lerna exec --stream -- '$LERNA_ROOT_PATH/node_modules/.bin/ts-node --project $LERNA_ROOT_PATH/scripts/tsconfig.json $LERNA_ROOT_PATH/scripts/src/norm.ts'",
+    "pub": "yarn build && yarn test && lerna publish",
+    "lint": "eslint ."
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.21",
+    "@typescript-eslint/eslint-plugin": "^2.6.0",
+    "@typescript-eslint/parser": "^2.6.0",
+    "eslint": "^6.6.0",
+    "eslint-config-prettier": "^6.5.0",
+    "eslint-plugin-react": "^7.16.0",
+    "husky": "^3.0.9",
+    "lerna": "^3.18.3",
+    "prettier": "^1.18.2",
+    "pretty-quick": "^2.0.0",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.4"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "name": "@lomasi-example/basic",
+  "version": "1.0.0-alpha.5",
+  "private": true,
+  "description": "Basic example of lomasi",
+  "repository": "git@github.com:etienne-dldc/lomasi.git",
+  "license": "MIT",
+  "author": "Etienne Dldc <e.deladonchamps@gmail.com>",
+  "main": "index.js",
+  "scripts": {
+    "server:start": "ts-node ./server/index.ts",
+    "client:start": "parcel ./client/index.html --open"
+  },
+  "dependencies": {
+    "@lomasi/react": "1.0.0-alpha.0",
+    "@lomasi/server": "1.0.0-alpha.0",
+    "history": "^4.10.1",
+    "query-string": "^6.8.3",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
+    "@types/history": "^4.7.3",
+    "@types/react": "^16.9.11",
+    "@types/react-dom": "^16.9.3",
+    "browserslist": "^4.7.2",
+    "parcel-bundler": "^1.12.4",
+    "ts-node": "^8.4.1",
+    "ts-node-dev": "^1.0.0-pre.43"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 10"
+  ]
+}

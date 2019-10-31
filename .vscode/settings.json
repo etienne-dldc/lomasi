@@ -1,0 +1,9 @@
+{
+  "files.exclude": {
+    "**/.rts2_cache_cjs": true,
+    "**/.rts2_cache_esm": true,
+    "**/.cache": true
+  },
+  "eslint.enable": true,
+  "typescript.tsdk": "node_modules/typescript/lib"
+}
