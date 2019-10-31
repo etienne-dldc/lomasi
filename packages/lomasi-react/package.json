@@ -1,6 +1,6 @@
 {
   "name": "@lomasi/react",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0-alpha.1",
   "description": "React hook for Lomasi",
   "keywords": [],
   "homepage": "https://github.com/etienne-dldc/lomasi#readme",
@@ -28,7 +28,7 @@
     "react": "^16.11.0"
   },
   "devDependencies": {
-    "@types/react": "^16.9.11",
-    "@types/jwt-decode": "^2.2.1"
+    "@types/jwt-decode": "^2.2.1",
+    "@types/react": "^16.9.11"
   }
 }
