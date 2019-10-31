@@ -18,7 +18,6 @@
   "typings": "dist/index.d.ts",
   "scripts": {
     "build": "tsdx build",
-    "pub": "yarn build && npx np",
     "start": "tsdx watch",
     "test": "tsdx test",
     "typecheck": "tsc --noEmit"
