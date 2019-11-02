@@ -30,18 +30,37 @@ export const LoginRoute = Route.POST(ROUTES.login, loginBodyValidator.validate, 
   const host = url.host;
   const app = options.apps.find((v): boolean => v.domain === host);
   if (app === undefined) {
-    throw new HttpError.BadRequest('Host not allowed');
+    throw new HttpError.Unauthorized('Host not allowed');
   }
   if (options.skipOriginCheck !== true) {
     if (request.origin === null) {
-      throw new HttpError.BadRequest('Origin not allowed');
+      throw new HttpError.Unauthorized('Missing origin');
     }
-    // TODO: check origin is the same !
+    if (app.allowedOrigin === null || app.allowedOrigin === undefined) {
+      // no setting => allow only the app origin
+      if (app.domain !== request.origin) {
+        // TODO:  remove details (only for debug)
+        throw new HttpError.Unauthorized(`Invalid origin (got ${request.origin} expect ${app.domain})`);
+      }
+    } else {
+      if (app.allowedOrigin.includes(request.origin) === false) {
+        throw new HttpError.Unauthorized(`Invalid origin`);
+      }
+    }
   }
-  console.log('origin', request.origin);
 
-  // TODO: check whitelist / backlist
-  const token = jwt.sign({ email: body.email, app: host }, app.jwtTokenSecret, {
+  if (app.usersBlackList) {
+    if (app.usersBlackList.includes(body.email)) {
+      throw new HttpError.Unauthorized(`Unauthorized user`);
+    }
+  }
+  if (app.usersWhiteList) {
+    if (app.usersWhiteList.includes(body.email) === false) {
+      throw new HttpError.Unauthorized(`Unauthorized user`);
+    }
+  }
+
+  const token = jwt.sign({ email: body.email, app: host }, app.jwtSecret, {
     expiresIn: '1h',
   });
   const link = body.callback.replace('{{TOKEN}}', encodeURIComponent(token));

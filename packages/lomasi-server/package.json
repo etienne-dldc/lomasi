@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "jsonwebtoken": "^8.5.1",
-    "tumau": "^1.0.0-alpha.37",
+    "tumau": "^1.0.0-alpha.38",
     "yup": "^0.27.0"
   },
   "devDependencies": {
