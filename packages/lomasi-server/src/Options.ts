@@ -1,7 +1,7 @@
 import { Mailer } from './Mailer';
 
 export interface AppConfig {
-  domain: string;
+  origin: string;
   jwtSecret: string;
   usersWhiteList?: Array<string> | null;
   usersBlackList?: Array<string> | null;

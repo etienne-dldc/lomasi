@@ -27,10 +27,10 @@ export const LoginRoute = Route.POST(ROUTES.login, loginBodyValidator.validate, 
 
   const body = loginBodyValidator.getValue(ctx);
   const url = new URL(body.callback);
-  const host = url.host;
-  const app = options.apps.find((v): boolean => v.domain === host);
+  const cbOrigin = url.origin;
+  const app = options.apps.find((v): boolean => v.origin === cbOrigin);
   if (app === undefined) {
-    throw new HttpError.Unauthorized('Host not allowed');
+    throw new HttpError.Unauthorized('Callback origin not allowed');
   }
   if (options.skipOriginCheck !== true) {
     if (request.origin === null) {
@@ -38,9 +38,9 @@ export const LoginRoute = Route.POST(ROUTES.login, loginBodyValidator.validate, 
     }
     if (app.allowedOrigin === null || app.allowedOrigin === undefined) {
       // no setting => allow only the app origin
-      if (app.domain !== request.origin) {
+      if (app.origin !== request.origin) {
         // TODO:  remove details (only for debug)
-        throw new HttpError.Unauthorized(`Invalid origin (got ${request.origin} expect ${app.domain})`);
+        throw new HttpError.Unauthorized(`Invalid origin (got ${request.origin} expect ${app.origin})`);
       }
     } else {
       if (app.allowedOrigin.includes(request.origin) === false) {
@@ -60,7 +60,7 @@ export const LoginRoute = Route.POST(ROUTES.login, loginBodyValidator.validate, 
     }
   }
 
-  const token = jwt.sign({ email: body.email, app: host }, app.jwtSecret, {
+  const token = jwt.sign({ email: body.email, app: cbOrigin }, app.jwtSecret, {
     expiresIn: '1h',
   });
   const link = body.callback.replace('{{TOKEN}}', encodeURIComponent(token));
