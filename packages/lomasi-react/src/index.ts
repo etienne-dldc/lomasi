@@ -94,7 +94,7 @@ export function useLomasi(options: Options): LomasiResult {
       if (expIn > 0) {
         const timer = window.setTimeout(() => {
           setTimer(Math.random());
-        }, expIn + 10);
+        }, (expIn + 10) * 1000);
         return () => {
           window.clearTimeout(timer);
         };
