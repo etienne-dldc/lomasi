@@ -23,7 +23,7 @@ interface LomasiToken {
 }
 
 interface LomasiResult {
-  login(email: string, callbackUrl: string): Promise<void>;
+  login(email: string, callbackUrl: string): Promise<Response>;
   logout(): void;
   confirmLogin(): void;
   status: LomasiStatus;
@@ -116,7 +116,7 @@ export function useLomasi(options: Options): LomasiResult {
   }, [currentToken]);
 
   const login = React.useCallback(
-    async (email: string, callbackUrl: string) => {
+    async (email: string, callbackUrl: string): Promise<Response> => {
       const res = await fetch(loginRoute, {
         method: 'post',
         body: JSON.stringify({ email, callback: callbackUrl }),
@@ -124,8 +124,7 @@ export function useLomasi(options: Options): LomasiResult {
           'Content-Type': 'application/json',
         },
       });
-      const data = res.json();
-      console.log(data);
+      return res;
     },
     [loginRoute]
   );
