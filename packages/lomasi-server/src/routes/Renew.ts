@@ -5,45 +5,69 @@ import { Route, JsonResponse, HttpError, RequestConsumer } from 'tumau';
 import { ROUTES } from '../constants';
 import { YupValidator } from '../YupValidator';
 import { OptionsContext } from '../contexts';
-import { LomasiTokenData } from '@lomasi/common';
+import { LomasiTokenData, LomasiToken } from '@lomasi/common';
 import { Security } from '../Security';
+import { nowInSeconds } from '../utils';
 
-interface LoginBody {
-  email: string;
+interface RenewBody {
+  token: string;
   callback: string;
 }
 
-const loginBodyValidator = YupValidator<LoginBody>(
+const renewBodyValidator = YupValidator<RenewBody>(
   Yup.object().shape({
-    email: Yup.string()
-      .email()
-      .lowercase()
-      .required(),
+    token: Yup.string().required(),
     callback: Yup.string().required(),
   })
 );
 
-export const LoginRoute = Route.POST(ROUTES.login, loginBodyValidator.validate, async ctx => {
+export const RenewRoute = Route.POST(ROUTES.renew, renewBodyValidator.validate, async ctx => {
   const options = ctx.getOrThrow(OptionsContext.Consumer);
   const request = ctx.getOrThrow(RequestConsumer);
 
-  const body = loginBodyValidator.getValue(ctx);
+  const body = renewBodyValidator.getValue(ctx);
   const url = new URL(body.callback);
   const cbOrigin = url.origin;
   const app = options.apps.find((v): boolean => v.origin === cbOrigin);
+
   if (app === undefined) {
     throw new HttpError.Unauthorized('Callback origin not allowed');
   }
+
   if (options.skipOriginCheck !== true) {
     Security.checkOrigin(request.origin, app);
   }
 
-  Security.checkUser(body.email, app);
+  const prevToken: LomasiToken = (() => {
+    try {
+      return jwt.verify(body.token, app.jwtSecret, {
+        ignoreExpiration: true,
+      }) as any;
+    } catch (error) {
+      throw new HttpError.Unauthorized(`Invalid token`);
+    }
+  })();
+
+  const user = prevToken.email;
+
+  const tokenRenewExpire = prevToken.exp + app.maxRenewDelay;
+
+  const timeBeforeExpire = tokenRenewExpire - nowInSeconds();
+
+  if (prevToken.renew === 0) {
+    throw new HttpError.Unauthorized('Renewal limit reached');
+  }
+
+  if (timeBeforeExpire <= 0) {
+    throw new HttpError.Unauthorized('Token is too old');
+  }
+
+  Security.checkUser(user, app);
 
   const tokenData: LomasiTokenData = {
-    email: body.email,
+    email: user,
     app: cbOrigin,
-    renew: app.maxRenew,
+    renew: Math.max(0, prevToken.renew - 1),
   };
 
   const token = jwt.sign(tokenData, app.jwtSecret, {
@@ -52,13 +76,8 @@ export const LoginRoute = Route.POST(ROUTES.login, loginBodyValidator.validate, 
 
   const link = body.callback.replace('{{TOKEN}}', encodeURIComponent(token));
 
-  await options.mailer.sendMail({
-    to: body.email,
-    subject: 'Magic link 🎩',
-    html: [`<h1>Magic link 🎩 !</h1>`, `<a href="${link}">Login to ${url.origin}</a>`].join(''),
-    text: `Magic link: ${link}`,
-  });
   return JsonResponse.with({
-    message: 'check your mail',
+    token,
+    link,
   });
 });

@@ -22,7 +22,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "jwt-decode": "^2.2.0"
+    "jwt-decode": "^2.2.0",
+    "@lomasi/common": "1.0.0-alpha.5"
   },
   "peerDependencies": {
     "react": "^16.11.0"
