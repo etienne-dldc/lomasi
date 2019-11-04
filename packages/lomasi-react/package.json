@@ -19,7 +19,8 @@
   "scripts": {
     "build": "tsdx build",
     "start": "tsdx watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "tsdx lint"
   },
   "dependencies": {
     "jwt-decode": "^2.2.0",
