@@ -1,6 +1,6 @@
 {
   "name": "@lomasi/server",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.6",
   "description": "Login made simple",
   "keywords": [],
   "homepage": "https://github.com/etienne-dldc/lomasi#readme",
@@ -22,7 +22,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@lomasi/common": "1.0.0-alpha.5",
+    "@lomasi/common": "^1.0.0-alpha.6",
     "jsonwebtoken": "^8.5.1",
     "tumau": "^1.0.0-alpha.39",
     "yup": "^0.27.0"
