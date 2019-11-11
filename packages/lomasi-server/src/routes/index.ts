@@ -1,6 +1,6 @@
 import { RouterPackage } from 'tumau';
 import { LoginRoute } from './Login';
 import { NotFoundRoute } from './NotFound';
-import { RenewRoute } from './Renew';
+import { AuthenticateRoute } from './Authenticate';
 
-export const Routes = RouterPackage([LoginRoute, RenewRoute, NotFoundRoute]);
+export const Routes = RouterPackage([LoginRoute, AuthenticateRoute, NotFoundRoute]);

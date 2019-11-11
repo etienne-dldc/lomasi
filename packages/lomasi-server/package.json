@@ -24,16 +24,14 @@
   "dependencies": {
     "@lomasi/common": "1.0.0-alpha.5",
     "jsonwebtoken": "^8.5.1",
-    "ms": "^2.1.2",
-    "tumau": "^1.0.0-alpha.38",
+    "tumau": "^1.0.0-alpha.39",
     "yup": "^0.27.0"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^8.3.5",
-    "@types/ms": "^0.7.31",
     "@types/yup": "^0.26.24",
     "tsdx": "^0.11.0",
     "tslib": "^1.10.0",
-    "typescript": "^3.6.4"
+    "typescript": "^3.7.2"
   }
 }

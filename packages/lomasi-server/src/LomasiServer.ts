@@ -2,7 +2,6 @@ import { Server, Middleware, JsonParser, ErrorToJson, Compress, Cors } from 'tum
 import { OptionsContext } from './contexts';
 import { Routes } from './routes';
 import { UserOptions, Options, AppConfigResolved, APP_CONFIG_DEFAULTS, OPTIONS_DEFAULTS } from './Options';
-import { seconds } from './utils';
 
 export const LomasiServer = {
   create: createLomasiServer,
@@ -17,9 +16,6 @@ function createLomasiServer(userOptions: UserOptions): Server {
         return {
           ...APP_CONFIG_DEFAULTS,
           ...app,
-          maxRenewDelay: seconds(
-            app.maxRenewDelay === undefined ? APP_CONFIG_DEFAULTS.maxRenewDelay : app.maxRenewDelay
-          ),
         };
       }
     ),

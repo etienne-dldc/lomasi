@@ -5,13 +5,8 @@ import { Route, JsonResponse, HttpError, RequestConsumer } from 'tumau';
 import { ROUTES } from '../constants';
 import { YupValidator } from '../YupValidator';
 import { OptionsContext } from '../contexts';
-import { LomasiTokenData } from '@lomasi/common';
+import { LomasiTokenData, LoginBody, LoginResponse } from '@lomasi/common';
 import { Security } from '../Security';
-
-interface LoginBody {
-  email: string;
-  callback: string;
-}
 
 const loginBodyValidator = YupValidator<LoginBody>(
   Yup.object().shape({
@@ -20,6 +15,9 @@ const loginBodyValidator = YupValidator<LoginBody>(
       .lowercase()
       .required(),
     callback: Yup.string().required(),
+    password: Yup.string()
+      .min(4)
+      .required(),
   })
 );
 
@@ -42,12 +40,13 @@ export const LoginRoute = Route.POST(ROUTES.login, loginBodyValidator.validate, 
 
   const tokenData: LomasiTokenData = {
     email: body.email,
-    app: cbOrigin,
-    renew: app.maxRenew,
+    app: app.origin,
   };
 
-  const token = jwt.sign(tokenData, app.jwtSecret, {
-    expiresIn: app.tokenExpireIn,
+  const jwtPass = app.jwtMailSecret + body.password;
+
+  const token = jwt.sign(tokenData, jwtPass, {
+    expiresIn: app.jwtMailExpireIn,
   });
 
   const link = body.callback.replace('{{TOKEN}}', encodeURIComponent(token));
@@ -58,7 +57,7 @@ export const LoginRoute = Route.POST(ROUTES.login, loginBodyValidator.validate, 
     html: [`<h1>Magic link 🎩 !</h1>`, `<a href="${link}">Login to ${url.origin}</a>`].join(''),
     text: `Magic link: ${link}`,
   });
-  return JsonResponse.with({
+  return JsonResponse.with<LoginResponse>({
     message: 'check your mail',
   });
 });

@@ -9,8 +9,11 @@ const mailer: Mailer = {
 const server = LomasiServer.create({
   apps: [
     {
-      domain: 'localhost:1234',
-      jwtTokenSecret: 'not-so-secret',
+      origin: 'http://localhost:1234',
+      jwtAuthSecret: 'auth-not-so-secret',
+      jwtMailSecret: 'mail-not-so-secret',
+      jwtAuthExpireIn: '30s',
+      jwtMailExpireIn: '20m',
     },
   ],
   mailer,

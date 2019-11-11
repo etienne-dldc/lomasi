@@ -6,7 +6,6 @@ export function YupValidator<T>(schema: Yup.Schema<T>) {
 
   const validate: Middleware = async (ctx, next) => {
     const jsonBody = ctx.getOrThrow(JsonParserConsumer);
-    console.log(jsonBody);
     const body = await schema.validate(jsonBody).catch((e): never => {
       if (e instanceof Yup.ValidationError) {
         throw new HttpError.BadRequest(e.message);

@@ -1,9 +1,32 @@
 import React from 'react';
 
-export function useLocalStorageState(key: string): [string | null, (val: string | null) => void] {
-  const [state, setState] = React.useState<string | null>(() => {
+type SetToken = (token: string | null) => void;
+type GetToken = () => string | null;
+
+export function useLocalStorageState(key: string): [string | null, SetToken, GetToken] {
+  const getToken = React.useCallback((): string | null => {
     return window.localStorage.getItem(key);
-  });
+  }, [key]);
+
+  const [state, setState] = React.useState<string | null>(getToken);
+
+  const update = React.useCallback(() => {
+    setState(getToken());
+  }, [getToken]);
+
+  const setToken = React.useCallback(
+    (val: null | string) => {
+      if (val === null) {
+        window.localStorage.removeItem(key);
+      } else {
+        console.log('setItem', key, val);
+
+        window.localStorage.setItem(key, val);
+      }
+      update();
+    },
+    [key, update]
+  );
 
   // Handle key change !
   const stateRef = React.useRef<string | null>(state);
@@ -11,11 +34,11 @@ export function useLocalStorageState(key: string): [string | null, (val: string 
     stateRef.current = state;
   }, [state]);
   React.useEffect(() => {
-    const currentVal = window.localStorage.getItem(key);
+    const currentVal = getToken();
     if (stateRef.current !== currentVal) {
-      setState(currentVal);
+      update();
     }
-  }, [key]);
+  }, [getToken, update]);
 
   React.useEffect(() => {
     const onStorage = (e: StorageEvent) => {
@@ -25,25 +48,13 @@ export function useLocalStorageState(key: string): [string | null, (val: string 
       if (e.key !== key) {
         return;
       }
-      setState(e.newValue);
+      update();
     };
     window.addEventListener('storage', onStorage);
     return () => {
       window.removeEventListener('storage', onStorage);
     };
-  }, [key]);
+  }, [key, update]);
 
-  const setValue = React.useCallback(
-    (val: string | null) => {
-      if (val === null) {
-        window.localStorage.removeItem(key);
-      } else {
-        window.localStorage.setItem(key, val);
-      }
-      setState(val);
-    },
-    [key]
-  );
-
-  return [state, setValue];
+  return [state, setToken, getToken];
 }
