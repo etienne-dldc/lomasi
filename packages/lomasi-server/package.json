@@ -33,5 +33,9 @@
     "tsdx": "^0.11.0",
     "tslib": "^1.10.0",
     "typescript": "^3.7.2"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "c82f1ea83df9f66be0c4ec38d95d132d577bd291"
 }
