@@ -14,7 +14,6 @@ export function useRenderAt(timeInSeconds: number | null): void {
     if (diff < 0) {
       return;
     }
-    // add 1 second
     const timer = window.setTimeout(() => {
       forceRender();
     }, diff * 1000);
