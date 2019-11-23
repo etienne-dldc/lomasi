@@ -19,8 +19,6 @@ export function useLocalStorageState(key: string): [string | null, SetToken, Get
       if (val === null) {
         window.localStorage.removeItem(key);
       } else {
-        console.log('setItem', key, val);
-
         window.localStorage.setItem(key, val);
       }
       update();

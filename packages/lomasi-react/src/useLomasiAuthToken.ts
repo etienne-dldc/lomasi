@@ -52,11 +52,6 @@ export function useLomasiAuthToken(options: UseLomasiAuthTokenOptions): UseLomas
   const expired = tokenData ? Token.expired(tokenData.data) : null;
   const willExpireSoon = tokenData ? Token.expired(tokenData.data, -AUTO_RENEW_DELAY) : null;
 
-  console.log({
-    expired,
-    willExpireSoon,
-  });
-
   const result = ((): UseLomasiAuthTokenResult => {
     if (!refreshToken || !password) {
       return { type: 'VOID' };
