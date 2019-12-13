@@ -2,10 +2,14 @@ import { Mailer } from './Mailer';
 
 export interface AppConfig {
   origin: string;
-  jwtMailSecret: string;
-  jwtAuthSecret: string;
-  jwtMailExpireIn?: string | number;
-  jwtAuthExpireIn?: string | number;
+  refreshToken: {
+    jwtSecret: string;
+    jwtExpireIn?: string | number;
+  };
+  authToken?: {
+    jwtSecret: string;
+    jwtExpireIn?: string | number;
+  } | null;
   isUserAllowed?: null | ((user: string) => boolean | Promise<boolean>);
   allowedOrigin?: Array<string> | null;
 }
@@ -20,12 +24,15 @@ export interface UserOptions {
 
 export type Options = Omit<Required<UserOptions>, 'apps'> & { apps: Array<AppConfigResolved> };
 
+export const DEFAULT_REFRESH_TOKEN_EXPIRE_IN = '7d';
+export const DEFAULT_AUTH_TOKEN_EXPIRE_IN = '7d';
+
 export const APP_CONFIG_DEFAULTS: AppConfigResolved = {
   origin: '',
-  jwtAuthSecret: '',
-  jwtMailSecret: '',
-  jwtAuthExpireIn: '10m',
-  jwtMailExpireIn: '7d',
+  refreshToken: {
+    jwtSecret: '',
+  },
+  authToken: null,
   allowedOrigin: null,
   isUserAllowed: null,
 };

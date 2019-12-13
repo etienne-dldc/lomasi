@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { URL } from 'url';
 import { LomasiTokenData, LoginBody, LoginResponse } from '@lomasi/common';
 import { Security } from '../Security';
-import { Options } from '../Options';
+import { Options, DEFAULT_REFRESH_TOKEN_EXPIRE_IN } from '../Options';
 
 export async function LoginRoute(origin: string | null, body: LoginBody, options: Options): Promise<LoginResponse> {
   try {
@@ -43,10 +43,10 @@ async function TryLoginRoute(origin: string | null, body: LoginBody, options: Op
     app: app.origin,
   };
 
-  const jwtPass = app.jwtMailSecret + body.password;
+  const jwtPass = app.refreshToken.jwtSecret + body.password;
 
   const token = jwt.sign(tokenData, jwtPass, {
-    expiresIn: app.jwtMailExpireIn,
+    expiresIn: app.refreshToken.jwtExpireIn || DEFAULT_REFRESH_TOKEN_EXPIRE_IN,
   });
 
   const link = body.callback.replace('{{TOKEN}}', encodeURIComponent(token));

@@ -30,16 +30,31 @@ export interface AuthenticateBody {
   password: string;
 }
 
-export type AuthenticateResponse =
-  | {
-      type: 'Authorized';
-      token: string;
-    }
+export type AuthenticateValidateCommon =
   | { type: 'InvalidTokenOrPassword' }
   | { type: 'TokenExpired' }
+  | { type: 'AuthTokenNotConfigured' }
   | CommonResponse
   | CheckOriginError
   | CheckUserError;
+
+export type AuthenticateResponse =
+  | AuthenticateValidateCommon
+  | {
+      type: 'Authorized';
+      token: string;
+    };
+
+export interface ValidateBody {
+  token: string;
+  password: string;
+}
+
+export type ValidateResponse =
+  | AuthenticateValidateCommon
+  | {
+      type: 'Validated';
+    };
 
 export type CheckOriginError = { type: 'MissingOrigin' } | { type: 'InvalidOrigin' };
 

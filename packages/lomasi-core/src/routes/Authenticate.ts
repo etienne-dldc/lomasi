@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { URL } from 'url';
 import { LomasiTokenData, LomasiToken, AuthenticateBody, AuthenticateResponse } from '@lomasi/common';
 import { Security } from '../Security';
-import { Options } from '../Options';
+import { Options, DEFAULT_AUTH_TOKEN_EXPIRE_IN } from '../Options';
 
 export async function AuthenticateRoute(
   origin: string | null,
@@ -45,6 +45,10 @@ async function TryAuthenticateRoute(
     return { type: 'InvalidOrigin' };
   }
 
+  if (app.authToken === null) {
+    return { type: 'AuthTokenNotConfigured' };
+  }
+
   if (options.skipOriginCheck !== true) {
     const originAllowed = Security.checkOrigin(origin, app);
     if (originAllowed !== true) {
@@ -52,7 +56,7 @@ async function TryAuthenticateRoute(
     }
   }
 
-  const jwtPass = app.jwtMailSecret + body.password;
+  const jwtPass = app.refreshToken.jwtSecret + body.password;
 
   const prevTokenRes = getPrevToken(body.token, jwtPass);
   if (prevTokenRes.type === 'Error') {
@@ -71,8 +75,8 @@ async function TryAuthenticateRoute(
     app: cbOrigin,
   };
 
-  const token = jwt.sign(tokenData, app.jwtAuthSecret, {
-    expiresIn: app.jwtAuthExpireIn,
+  const token = jwt.sign(tokenData, app.authToken.jwtSecret, {
+    expiresIn: app.authToken.jwtExpireIn || DEFAULT_AUTH_TOKEN_EXPIRE_IN,
   });
 
   return {

@@ -1,10 +1,12 @@
 import { LoginRoute, AuthenticateRoute } from './routes';
 import { UserOptions, Options, AppConfigResolved, APP_CONFIG_DEFAULTS, OPTIONS_DEFAULTS } from './Options';
-import { LoginBody, LoginResponse, AuthenticateBody, AuthenticateResponse } from '@lomasi/common';
+import { LoginBody, LoginResponse, AuthenticateBody, AuthenticateResponse, ValidateResponse } from '@lomasi/common';
+import { ValidateRoute } from './routes/Validate';
 
 export interface LomasiCore {
   login: (origin: string | null, body: LoginBody) => Promise<LoginResponse>;
   authenticate: (origin: string | null, body: AuthenticateBody) => Promise<AuthenticateResponse>;
+  validate: (origin: string | null, body: AuthenticateBody) => Promise<ValidateResponse>;
 }
 
 export const LomasiCore = {
@@ -28,5 +30,6 @@ function createLomasiCore(userOptions: UserOptions): LomasiCore {
   return {
     login: (origin, body) => LoginRoute(origin, body, options),
     authenticate: (origin, body) => AuthenticateRoute(origin, body, options),
+    validate: (origin, body) => ValidateRoute(origin, body, options),
   };
 }
