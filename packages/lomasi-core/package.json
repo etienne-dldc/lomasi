@@ -1,5 +1,5 @@
 {
-  "name": "@lomasi/server",
+  "name": "@lomasi/core",
   "version": "1.0.0-alpha.7",
   "description": "Login made simple",
   "keywords": [],
@@ -14,7 +14,7 @@
     "dist"
   ],
   "main": "dist/index.js",
-  "module": "dist/server.lomasi.esm.js",
+  "module": "dist/core.lomasi.esm.js",
   "typings": "dist/index.d.ts",
   "scripts": {
     "build": "tsdx build",
@@ -22,12 +22,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@lomasi/core": "^1.0.0-alpha.7",
-    "tumau": "^1.0.0-alpha.39",
-    "yup": "^0.27.0"
+    "@lomasi/common": "^1.0.0-alpha.7",
+    "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {
-    "@types/yup": "^0.26.24",
+    "@types/jsonwebtoken": "^8.3.5",
     "tsdx": "^0.11.0",
     "tslib": "^1.10.0",
     "typescript": "^3.7.2"

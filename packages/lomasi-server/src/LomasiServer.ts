@@ -1,29 +1,18 @@
 import { Server, Middleware, JsonParser, ErrorToJson, Compress, Cors } from 'tumau';
-import { OptionsContext } from './contexts';
+import { UserOptions, LomasiCore } from '@lomasi/core';
 import { Routes } from './routes';
-import { UserOptions, Options, AppConfigResolved, APP_CONFIG_DEFAULTS, OPTIONS_DEFAULTS } from './Options';
+import { LomasiCoreContext } from './contexts';
 
 export const LomasiServer = {
   create: createLomasiServer,
 };
 
 function createLomasiServer(userOptions: UserOptions): Server {
-  const options: Options = {
-    ...OPTIONS_DEFAULTS,
-    ...userOptions,
-    apps: userOptions.apps.map(
-      (app): AppConfigResolved => {
-        return {
-          ...APP_CONFIG_DEFAULTS,
-          ...app,
-        };
-      }
-    ),
-  };
+  const core = LomasiCore.create(userOptions);
 
   const server = Server.create(
     Middleware.compose(
-      Middleware.provider(OptionsContext.Provider(options)),
+      Middleware.provider(LomasiCoreContext.Provider(core)),
       Compress(),
       Cors.create(),
       ErrorToJson,

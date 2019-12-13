@@ -1,4 +1,4 @@
 import { Context } from 'tumau';
-import { Options } from './Options';
+import { LomasiCore } from '@lomasi/core';
 
-export const OptionsContext = Context.create<Options>('Options');
+export const LomasiCoreContext = Context.create<LomasiCore>('LomasiCore');

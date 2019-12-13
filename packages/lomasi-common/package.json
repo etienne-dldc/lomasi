@@ -14,7 +14,7 @@
     "dist"
   ],
   "main": "dist/index.js",
-  "module": "dist/lomasi.common.esm.js",
+  "module": "dist/common.lomasi.esm.js",
   "typings": "dist/index.d.ts",
   "scripts": {
     "build": "tsdx build",

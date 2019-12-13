@@ -1,6 +1,4 @@
 export { LomasiServer } from './LomasiServer';
-export { Options, AppConfig } from './Options';
-export { Mailer } from './Mailer';
 export {
   LoginBody,
   LoginResponse,
@@ -8,4 +6,6 @@ export {
   LomasiTokenData,
   AuthenticateBody,
   AuthenticateResponse,
-} from '@lomasi/common';
+  Mailer,
+  UserOptions,
+} from '@lomasi/core';

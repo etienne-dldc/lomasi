@@ -1,36 +1,38 @@
-import { HttpError } from 'tumau';
 import { AppConfigResolved } from './Options';
+import { CheckOriginError, CheckUserError } from '@lomasi/common';
 
 export const Security = {
   checkOrigin,
   checkUser,
 };
 
-function checkOrigin(origin: string | null, app: AppConfigResolved) {
+function checkOrigin(origin: string | null, app: AppConfigResolved): true | CheckOriginError {
   if (origin === null) {
-    throw new HttpError.Unauthorized('Missing origin');
+    return { type: 'MissingOrigin' };
   }
   if (app.allowedOrigin === null) {
     // no setting => allow only the app origin
     if (app.origin !== origin) {
-      throw new HttpError.Unauthorized(`Invalid origin`);
+      return { type: 'InvalidOrigin' };
     }
   } else {
     if (app.allowedOrigin.includes(origin) === false) {
-      throw new HttpError.Unauthorized(`Invalid origin`);
+      return { type: 'InvalidOrigin' };
     }
   }
+  return true;
 }
 
-function checkUser(user: string, app: AppConfigResolved) {
+function checkUser(user: string, app: AppConfigResolved): true | CheckUserError {
   if (app.usersBlackList) {
     if (app.usersBlackList.includes(user)) {
-      throw new HttpError.Unauthorized(`Unauthorized user`);
+      return { type: 'UnauthorizedUser' };
     }
   }
   if (app.usersWhiteList) {
     if (app.usersWhiteList.includes(user) === false) {
-      throw new HttpError.Unauthorized(`Unauthorized user`);
+      return { type: 'UnauthorizedUser' };
     }
   }
+  return true;
 }
