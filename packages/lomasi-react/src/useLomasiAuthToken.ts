@@ -32,8 +32,18 @@ export function useLomasiAuthToken(options: UseLomasiAuthTokenOptions): UseLomas
       if (refreshToken && password) {
         try {
           const res = await doGetToken(refreshToken, password);
-          setToken(res.token);
-          setRequestStatus({ type: 'VOID' });
+          if (res.type === 'Authorized') {
+            setToken(res.token);
+            setRequestStatus({ type: 'VOID' });
+            return;
+          }
+          setRequestStatus({
+            type: 'REJECTED',
+            token,
+            password,
+            error: res.type,
+          });
+          return;
         } catch (error) {
           setRequestStatus({
             type: 'REJECTED',

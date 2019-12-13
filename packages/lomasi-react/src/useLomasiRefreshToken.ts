@@ -52,6 +52,11 @@ export function useLomasiRefreshToken(options: UseLomasiRefreshOptions): UseLoma
   const [password, setPassword] = React.useState<null | string>(null);
   const [requestStatus, setRequestStatus] = React.useState<Request>({ type: 'VOID' });
 
+  /**
+   * Actions
+   */
+
+  // reset the request status
   const reset = React.useCallback(() => {
     setRequestStatus({ type: 'VOID' });
   }, []);
@@ -63,12 +68,15 @@ export function useLomasiRefreshToken(options: UseLomasiRefreshOptions): UseLoma
     }
   }, [getToken, setToken]);
 
+  // when conflict => use requested (override current)
   const confirmLogin = React.useCallback(() => {
     if (requestedToken && currentToken && requestedToken !== currentToken) {
       setToken(requestedToken);
+      setPassword(null);
     }
   }, [requestedToken, currentToken, setToken]);
 
+  // when conflict => keep current (clear requested)
   const cancel = React.useCallback(() => {
     clearRequestedToken();
   }, [clearRequestedToken]);
@@ -77,9 +85,18 @@ export function useLomasiRefreshToken(options: UseLomasiRefreshOptions): UseLoma
     async (email: string, password: string): Promise<void> => {
       setRequestStatus({ type: 'PENDING', email, password });
       try {
-        await doLogin(email, password);
-        setPassword(password);
-        setRequestStatus({ type: 'RESOLVED', email });
+        const res = await doLogin(email, password);
+        if (res.type === 'MailSend') {
+          setPassword(password);
+          setRequestStatus({ type: 'RESOLVED', email });
+          return;
+        }
+        setRequestStatus({
+          type: 'REJECTED',
+          email,
+          password,
+          error: res.type,
+        });
         return;
       } catch (error) {
         setRequestStatus({
@@ -93,6 +110,11 @@ export function useLomasiRefreshToken(options: UseLomasiRefreshOptions): UseLoma
     [doLogin]
   );
 
+  /**
+   * Tokens
+   * If exist, decode current & requested token
+   */
+
   const current = React.useMemo(
     () => (currentToken ? { token: currentToken, data: Token.decode(currentToken) } : null),
     [currentToken]
@@ -102,6 +124,10 @@ export function useLomasiRefreshToken(options: UseLomasiRefreshOptions): UseLoma
     () => (requestedToken ? { token: requestedToken, data: Token.decode(requestedToken) } : null),
     [requestedToken]
   );
+
+  /**
+   * Result
+   */
 
   const resultFromRequestStatus = (defaultResult: UseLomasiRefreshResult): UseLomasiRefreshResult => {
     if (requestStatus.type === 'PENDING') {
@@ -147,19 +173,25 @@ export function useLomasiRefreshToken(options: UseLomasiRefreshOptions): UseLoma
     return { type: 'LOGGED_IN', token: token.token, logout, password, setPassword };
   };
 
+  // compute the result
   const result = ((): UseLomasiRefreshResult => {
     const current = currentToken ? { token: currentToken, data: Token.decode(currentToken) } : null;
     const requested = requestedToken ? { token: requestedToken, data: Token.decode(requestedToken) } : null;
 
+    // only current
     if (current && requested === null) {
       return resultFromToken(current);
     }
 
+    // only requested
     if (requested && current === null) {
       return resultFromToken(requested);
     }
 
+    // both
     if (requested && current) {
+      // same token
+      // useEffect should request to remove requested
       if (requested.token === current.token) {
         return resultFromToken(requested);
       }
@@ -167,11 +199,15 @@ export function useLomasiRefreshToken(options: UseLomasiRefreshOptions): UseLoma
       if (sameAppSameMail) {
         if (requested.data.exp > current.data.exp) {
           // requested is fresher
+          // useEffect should replace current with requested
           return resultFromToken(requested);
         }
         // ignore requested token
+        // useEffect should request to remove requested
         return resultFromToken(current);
       }
+      // diffrent mail and/or app
+      // this is a conflict
       return {
         type: 'LOGIN_CONFLICT',
         token: current.token,
@@ -181,6 +217,8 @@ export function useLomasiRefreshToken(options: UseLomasiRefreshOptions): UseLoma
         cancel,
       };
     }
+    // no token (nor current nor requested)
+    // result depend on requestStatus
     if (requestStatus.type === 'VOID') {
       return { type: 'VOID', login };
     }
@@ -197,8 +235,16 @@ export function useLomasiRefreshToken(options: UseLomasiRefreshOptions): UseLoma
         password: requestStatus.password,
       };
     }
-    return { type: 'MAIL_SEND', email: requestStatus.email, reset };
+    if (requestStatus.type === 'RESOLVED') {
+      return { type: 'MAIL_SEND', email: requestStatus.email, reset };
+    }
+    throw new Error('Unexpected state');
   })();
+
+  // if current token change we reset the passeword
+  React.useLayoutEffect(() => {
+    setPassword(null);
+  }, [currentToken]);
 
   // setToken when there is requested but no current
   React.useEffect(() => {
