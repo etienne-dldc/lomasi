@@ -6,8 +6,7 @@ export interface AppConfig {
   jwtAuthSecret: string;
   jwtMailExpireIn?: string | number;
   jwtAuthExpireIn?: string | number;
-  usersWhiteList?: Array<string> | null;
-  usersBlackList?: Array<string> | null;
+  isUserAllowed?: null | ((user: string) => boolean | Promise<boolean>);
   allowedOrigin?: Array<string> | null;
 }
 
@@ -28,8 +27,7 @@ export const APP_CONFIG_DEFAULTS: AppConfigResolved = {
   jwtAuthExpireIn: '10m',
   jwtMailExpireIn: '7d',
   allowedOrigin: null,
-  usersBlackList: null,
-  usersWhiteList: null,
+  isUserAllowed: null,
 };
 
 const DEFAULT_MAILER: Mailer = {

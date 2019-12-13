@@ -33,7 +33,7 @@ async function TryLoginRoute(origin: string | null, body: LoginBody, options: Op
     }
   }
 
-  const userAllowed = Security.checkUser(body.email, app);
+  const userAllowed = await Security.checkUser(body.email, app);
   if (userAllowed !== true) {
     return userAllowed;
   }

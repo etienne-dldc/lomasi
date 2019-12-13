@@ -23,14 +23,10 @@ function checkOrigin(origin: string | null, app: AppConfigResolved): true | Chec
   return true;
 }
 
-function checkUser(user: string, app: AppConfigResolved): true | CheckUserError {
-  if (app.usersBlackList) {
-    if (app.usersBlackList.includes(user)) {
-      return { type: 'UnauthorizedUser' };
-    }
-  }
-  if (app.usersWhiteList) {
-    if (app.usersWhiteList.includes(user) === false) {
+async function checkUser(user: string, app: AppConfigResolved): Promise<true | CheckUserError> {
+  if (app.isUserAllowed) {
+    const res = await app.isUserAllowed(user);
+    if (res === false) {
       return { type: 'UnauthorizedUser' };
     }
   }

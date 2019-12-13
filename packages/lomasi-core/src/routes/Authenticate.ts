@@ -61,7 +61,7 @@ async function TryAuthenticateRoute(
   const prevToken = prevTokenRes.token;
   const user = prevToken.email;
 
-  const userAllowed = Security.checkUser(user, app);
+  const userAllowed = await Security.checkUser(user, app);
   if (userAllowed !== true) {
     return userAllowed;
   }
