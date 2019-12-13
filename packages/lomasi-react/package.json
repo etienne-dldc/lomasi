@@ -1,6 +1,6 @@
 {
   "name": "@lomasi/react",
-  "version": "1.0.0-alpha.9",
+  "version": "1.0.0-alpha.11",
   "description": "React hook for Lomasi",
   "keywords": [],
   "homepage": "https://github.com/etienne-dldc/lomasi#readme",
@@ -23,7 +23,7 @@
     "lint": "tsdx lint"
   },
   "dependencies": {
-    "@lomasi/common": "^1.0.0-alpha.9",
+    "@lomasi/common": "^1.0.0-alpha.11",
     "jwt-decode": "^2.2.0"
   },
   "peerDependencies": {
