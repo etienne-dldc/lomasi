@@ -38,6 +38,7 @@ export function useLocalStorageState(key: string): [string | null, SetToken, Get
     }
   }, [getToken, update]);
 
+  // listen to storage event
   React.useEffect(() => {
     const onStorage = (e: StorageEvent) => {
       if (e.storageArea !== window.localStorage) {

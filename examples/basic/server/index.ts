@@ -10,10 +10,14 @@ const server = LomasiServer.create({
   apps: [
     {
       origin: 'http://localhost:1234',
-      jwtAuthSecret: 'auth-not-so-secret',
-      jwtMailSecret: 'mail-not-so-secret',
-      jwtAuthExpireIn: '30s',
-      jwtMailExpireIn: '20m',
+      refreshToken: {
+        jwtSecret: 'auth-not-so-secret',
+        jwtExpireIn: '20m',
+      },
+      authToken: {
+        jwtSecret: 'mail-not-so-secret',
+        jwtExpireIn: '30s',
+      },
     },
   ],
   mailer,

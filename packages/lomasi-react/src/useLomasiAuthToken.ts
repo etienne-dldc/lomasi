@@ -1,7 +1,7 @@
 import React from 'react';
 import { AuthenticateResponse } from '@lomasi/common';
 import { Token } from './Token';
-import { useRenderAt } from './useRenderAt';
+import { useRenderAt } from './utils/useRenderAt';
 
 type Request =
   | { type: 'VOID' }

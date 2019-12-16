@@ -1,8 +1,8 @@
 import React from 'react';
-import { useLocalStorageState } from './useLocalStorageState';
+import { useLocalStorageState } from './utils/useLocalStorageState';
 import { LomasiToken, LoginResponse } from '@lomasi/common';
 import { Token } from './Token';
-import { useRenderAt } from './useRenderAt';
+import { useRenderAt } from './utils/useRenderAt';
 
 type Login = (email: string, password: string) => void;
 type SetPassword = (password: string) => void;
@@ -242,8 +242,14 @@ export function useLomasiRefreshToken(options: UseLomasiRefreshOptions): UseLoma
   })();
 
   // if current token change we reset the passeword
+  const prevToken = React.useRef(currentToken);
+  React.useEffect(() => {
+    prevToken.current = currentToken;
+  }, [currentToken]);
   React.useLayoutEffect(() => {
-    setPassword(null);
+    if (prevToken.current !== null) {
+      setPassword(null);
+    }
   }, [currentToken]);
 
   // setToken when there is requested but no current
