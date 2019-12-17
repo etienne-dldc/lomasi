@@ -2,12 +2,12 @@ import { render } from 'react-dom';
 import React from 'react';
 import {
   useLomasiRefreshToken,
-  useLomasiAuthToken,
   Token,
   LoginBody,
   LoginResponse,
   AuthenticateResponse,
   AuthenticateBody,
+  UseLomasiAuthTokenResult,
 } from '@lomasi/react';
 import { createBrowserHistory } from 'history';
 import querystring from 'query-string';
@@ -45,21 +45,21 @@ const App: React.FC = () => {
     throw new Error(`${content && content.message ? content.message : 'Server Error'}`);
   }, []);
 
-  const getToken = React.useCallback(async (token: string, password: string): Promise<AuthenticateResponse> => {
-    const body: AuthenticateBody = { password, token };
-    const res = await fetch(`http://localhost:3010/authenticate`, {
-      method: 'post',
-      body: JSON.stringify(body),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const content = await res.json();
-    if (res.status === 200) {
-      return content;
-    }
-    throw new Error(`Server Error: ${content && content.message ? content.message : 'error'}`);
-  }, []);
+  // const getToken = React.useCallback(async (token: string, password: string): Promise<AuthenticateResponse> => {
+  //   const body: AuthenticateBody = { password, token };
+  //   const res = await fetch(`http://localhost:3010/authenticate`, {
+  //     method: 'post',
+  //     body: JSON.stringify(body),
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //   });
+  //   const content = await res.json();
+  //   if (res.status === 200) {
+  //     return content;
+  //   }
+  //   throw new Error(`Server Error: ${content && content.message ? content.message : 'error'}`);
+  // }, []);
 
   const lomasiState = useLomasiRefreshToken({
     login,
@@ -67,11 +67,13 @@ const App: React.FC = () => {
     clearRequestedToken,
   });
 
-  const lomasiAuth = useLomasiAuthToken({
-    getToken,
-    password: lomasiState.type === 'LOGGED_IN' ? lomasiState.password : null,
-    refreshToken: lomasiState.type === 'LOGGED_IN' ? lomasiState.token : null,
-  });
+  // let lomasiAuth = useLomasiAuthToken({
+  //   getToken,
+  //   password: lomasiState.type === 'LOGGED_IN' ? lomasiState.password : null,
+  //   refreshToken: lomasiState.type === 'LOGGED_IN' ? lomasiState.token : null,
+  // });
+
+  const lomasiAuth: UseLomasiAuthTokenResult = { type: 'VOID' } as UseLomasiAuthTokenResult;
 
   return (
     <div>
@@ -147,16 +149,14 @@ const App: React.FC = () => {
         if (lomasiState.type === 'PENDING') {
           return <div>Pending...</div>;
         }
-        if (lomasiState.type === 'MAIL_SEND') {
+        if (lomasiState.type === 'WAITING_FOR_TOKEN') {
           return <div>Check your mail</div>;
         }
         if (lomasiState.type === 'PASSWORD_REQUIRED') {
-          const info = Token.decode(lomasiState.token);
+          // const info = Token.decode(lomasiState.token);
           return (
             <div>
-              <p>
-                Password for mail: {info.email} ({info.exp})
-              </p>
+              <p>Password for mail: {lomasiState.email} (info.exp ?)</p>
               <PasswordForm
                 initialPassword={''}
                 onValidate={pass => {
@@ -168,13 +168,13 @@ const App: React.FC = () => {
           );
         }
         if (lomasiState.type === 'LOGIN_CONFLICT') {
-          const current = Token.decode(lomasiState.token);
-          const requested = Token.decode(lomasiState.requestedToken);
+          // const current = Token.decode(lomasiState.token);
+          // const requested = Token.decode(lomasiState.requestedToken);
           return (
             <div>
-              <p>You are already logged in as {current.email}</p>
-              <button onClick={() => lomasiState.confirmLogin()}>Log in as {requested.email}</button>
-              <button onClick={() => lomasiState.cancel()}>Stay logged in as {current.email}</button>
+              <p>You are already logged in as {lomasiState.currentEmail}</p>
+              <button onClick={() => lomasiState.confirmLogin()}>Log in as {lomasiState.requestedEmail}</button>
+              <button onClick={() => lomasiState.cancel()}>Stay logged in as {lomasiState.currentEmail}</button>
             </div>
           );
         }

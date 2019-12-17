@@ -9,10 +9,14 @@ export const Token = {
 };
 
 function decode(token: string): LomasiToken {
+  console.log('decode', token);
+
   return decodeJwt<LomasiToken>(token);
 }
 
 function expired(token: string | LomasiToken, offset: number = 0): boolean {
+  console.log('expired', token);
+
   const exp = (typeof token === 'string' ? decode(token).exp : token.exp) + offset;
   return exp <= nowInSec();
 }
