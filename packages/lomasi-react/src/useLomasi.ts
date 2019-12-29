@@ -9,13 +9,14 @@ export type UseLomasiResult = {
 };
 
 export function useLomasi(options: UseLomasiOptions): UseLomasiResult {
-  const { clearRequestedToken, getToken, login, requestedToken, storageKey } = options;
+  const { clearRequestedToken, getToken, login, requestedToken, emailStorageKey, tokenStorageKey } = options;
 
   const refreshState = useLomasiRefreshToken({
     clearRequestedToken,
     login,
     requestedToken,
-    storageKey,
+    emailStorageKey,
+    tokenStorageKey,
   });
 
   const authState = useLomasiAuthToken({
