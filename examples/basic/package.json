@@ -1,6 +1,6 @@
 {
   "name": "@lomasi-example/basic",
-  "version": "1.0.0-alpha.11",
+  "version": "1.0.0-alpha.12",
   "private": true,
   "description": "Basic example of lomasi",
   "repository": "git@github.com:etienne-dldc/lomasi.git",
@@ -12,7 +12,7 @@
     "client:start": "parcel ./client/index.html --open"
   },
   "dependencies": {
-    "@lomasi/react": "^1.0.0-alpha.11",
+    "@lomasi/react": "^1.0.0-alpha.12",
     "@lomasi/server": "^1.0.0-alpha.11",
     "history": "^4.10.1",
     "query-string": "^6.8.3",
