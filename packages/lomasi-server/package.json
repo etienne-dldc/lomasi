@@ -24,11 +24,11 @@
   "dependencies": {
     "@lomasi/core": "^1.0.0-alpha.11",
     "tumau": "^1.0.0-alpha.39",
-    "yup": "^0.27.0"
+    "yup": "^0.28.0"
   },
   "devDependencies": {
     "@types/yup": "^0.26.24",
-    "tsdx": "^0.11.0",
+    "tsdx": "^0.12.1",
     "tslib": "^1.10.0",
     "typescript": "^3.7.2"
   },
